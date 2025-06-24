@@ -127,6 +127,8 @@ class Bomb:
         self.rct.center = random.randint(0, WIDTH), random.randint(0, HEIGHT)
         self.vx, self.vy = +5, +5
 
+
+
     def update(self, screen: pg.Surface):
         """
         爆弾を速度ベクトルself.vx, self.vyに基づき移動させる
@@ -141,9 +143,33 @@ class Bomb:
         screen.blit(self.img, self.rct)
 
 
+class Score:
+    """
+    スコア表示
+    引数 score : 爆弾を落とした数
+    """
+    def __init__(self, score: int):
+
+        self.fonto = pg.font.SysFont("hgp創英角ﾎﾟｯﾌﾟ体", 30)
+        self.score = score
+        self.img = self.fonto.render("スコア：０", 0, (0, 0, 255))
+        self.rct = self.img.get_rect()
+        self.rct.center = 100, HEIGHT-50
+    
+    def update(self, screen: pg.Surface):
+        """
+        スコアの表示の切り替え
+        引数 screen 画面 Surface
+        """
+        self.img = self.fonto.render(f"スコア：{self.score}", 0, (0, 0, 255))
+        screen.blit(self.img, self.rct)
+
+
+
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
-    screen = pg.display.set_mode((WIDTH, HEIGHT))    
+    screen = pg.display.set_mode((WIDTH, HEIGHT))
+    score = Score(0)
     bg_img = pg.image.load("fig/pg_bg.jpg")
     bird = Bird((300, 200))
     # bomb = Bomb((255, 0, 0), 10)
@@ -177,12 +203,14 @@ def main():
         
         for i, bomb in enumerate(bombs):
             if beam is not None:
-                if beam.rct.colliderect(bomb.rct):  # ビームと爆弾が衝突していたら
+                if beam.rct.colliderect(bomb.rct):
+                    #爆弾を撃ち落としたときに爆弾とビームを消す
                     beam = None
                     bombs[i] = None
-                    bird.change_img(6, screen)
+                    bird.change_img(6, screen) #喜ぶこうかとん
+                    score.score += 1
         bombs = [bomb for bomb in bombs if bomb is not None]
-
+        score.update(screen)
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
         if beam is not None:  # ビームが存在するときだけ
