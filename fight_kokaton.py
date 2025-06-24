@@ -165,6 +165,11 @@ class Score:
         screen.blit(self.img, self.rct)
 
 
+# class Explosion:
+#     """
+#     爆発に関するクラス
+#     """
+#     def __init__(self, ):
 
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
@@ -214,6 +219,7 @@ def main():
             beams = [beam for beam in beams if beam is not None] 
         bombs = [bomb for bomb in bombs if bomb is not None]
         score.update(screen)
+
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
